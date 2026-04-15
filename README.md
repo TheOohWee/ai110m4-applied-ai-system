@@ -124,24 +124,15 @@ The biggest difference showed up for the conflicting profile: even though the ge
 
 The recommender only sees a tiny catalog, so it can repeat the same songs for different users. It does not understand lyrics, artist relationships, or whether two moods are related in a subtle way. Because the experiment gave energy extra weight, it can also over-favor songs that feel intense even when the user's genre or mood is a better clue.
 
-You will go deeper on this in the model card.
-
 ---
 
 ## Reflection
 
-Read and complete `model_card.md`:
+My biggest learning moment was seeing how much one weight change can affect recommendations. When I increased the influence of energy, the top songs changed fast, even when genre and mood were weaker matches. That helped me understand that recommender systems are very sensitive to scoring design, not just data quality.
 
-[**Model Card**](model_card.md)
+AI tools helped me move faster when generating profiles, testing edge cases, and writing documentation, but I still needed to verify outputs in the terminal and check whether the rankings actually made sense. I was surprised that a simple point-based model can still feel personalized when the profile is clear. If I continue this project, I would add more songs, tune weights with data instead of manual guesses, and add stronger diversity rules to avoid repetitive results.
 
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
-
-See [reflection.md](reflection.md) for the pair-by-pair comparison notes.
-
-See [reflection.md](reflection.md) for the profile-by-profile comparison notes.
+See [model_card.md](model_card.md) and [reflection.md](reflection.md) for the full evaluation notes.
 
 
 ---
