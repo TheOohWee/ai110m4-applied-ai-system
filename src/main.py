@@ -9,12 +9,15 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
+from pathlib import Path
 from textwrap import wrap
 
 try:
     from .recommender import load_songs, recommend_songs
 except ImportError:
     from recommender import load_songs, recommend_songs
+
+_DATA_PATH = Path(__file__).parent.parent / "data" / "songs.csv"
 
 
 def _print_recommendation_table(recommendations: list) -> None:
@@ -56,7 +59,7 @@ def _print_recommendation_table(recommendations: list) -> None:
 
 
 def main() -> None:
-    songs = load_songs("data/songs.csv") 
+    songs = load_songs(str(_DATA_PATH))
     print(f"Loaded songs: {len(songs)}")
 
     profiles = {
