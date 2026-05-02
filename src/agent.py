@@ -14,7 +14,7 @@ import os
 import re
 from pathlib import Path
 
-import google.generativeai as genai
+from google import genai
 
 try:
     from dotenv import load_dotenv
@@ -40,6 +40,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+MODEL = "gemini-2.5-flash"
 CONFIDENCE_REFINE_THRESHOLD = 0.6
 
 _GENRES = "pop, lofi, rock, ambient, jazz, indie pop, synthwave, hip hop, country, metal, r&b, edm, latin, classical, folk"
@@ -84,12 +85,16 @@ def _parse_json(text: str) -> dict:
     return json.loads(text.strip())
 
 
-def _extract(model, query: str, extra: str = "") -> dict:
+def _call(client, prompt: str) -> str:
+    response = client.models.generate_content(model=MODEL, contents=prompt)
+    return response.text
+
+
+def _extract(client, query: str, extra: str = "") -> dict:
     prompt = _EXTRACT_PROMPT.format(
         query=query, extra=extra, genres=_GENRES, moods=_MOODS
     )
-    response = model.generate_content(prompt)
-    return _parse_json(response.text)
+    return _parse_json(_call(client, prompt))
 
 
 def run_agent(query: str, songs: list, k: int = 5) -> dict:
@@ -106,13 +111,12 @@ def run_agent(query: str, songs: list, k: int = 5) -> dict:
             "GEMINI_API_KEY not set. Add it to your .env file."
         )
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    client = genai.Client(api_key=api_key)
     steps: list[dict] = []
     logger.info("Agent query: %r", query)
 
     # Step 1 — extract preferences
-    prefs = _extract(model, query)
+    prefs = _extract(client, query)
     conf = float(prefs.get("confidence", 1.0))
     steps.append({
         "step": 1,
@@ -131,7 +135,7 @@ def run_agent(query: str, songs: list, k: int = 5) -> dict:
             f"Your previous extraction had confidence {conf:.2f}. "
             "Reconsider: what genre and mood most likely match the underlying intent?"
         )
-        prefs = _extract(model, query, extra=extra)
+        prefs = _extract(client, query, extra=extra)
         conf = float(prefs.get("confidence", conf))
         steps.append({
             "step": 2,
@@ -170,9 +174,9 @@ def run_agent(query: str, songs: list, k: int = 5) -> dict:
         f'{i+1}. "{s["title"]}" by {s["artist"]} ({s["genre"]}, {s["mood"]}, energy={s["energy"]:.2f})'
         for i, (s, _, _) in enumerate(recommendations)
     )
-    explanation = model.generate_content(
-        _EXPLAIN_PROMPT.format(query=query, rec_lines=rec_lines)
-    ).text.strip()
+    explanation = _call(
+        client, _EXPLAIN_PROMPT.format(query=query, rec_lines=rec_lines)
+    ).strip()
     steps.append({"step": len(steps) + 1, "action": "generate_explanation", "result": "done"})
     logger.info("Explanation generated")
 
