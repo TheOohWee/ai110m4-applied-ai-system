@@ -121,17 +121,10 @@ with st.sidebar:
     st.caption("Natural language music recommendations\npowered by Claude")
     st.divider()
 
-    st.markdown("### API Key")
-    env_key = os.getenv("ANTHROPIC_API_KEY", "")
-    api_key_input = st.text_input(
-        "Anthropic API Key",
-        value=env_key,
-        type="password",
-        placeholder="sk-ant-...",
-        help="Get yours at console.anthropic.com",
-    )
-    if api_key_input:
-        os.environ["ANTHROPIC_API_KEY"] = api_key_input
+    if os.getenv("ANTHROPIC_API_KEY"):
+        st.success("API key loaded ✓")
+    else:
+        st.error("No API key found.\nAdd `ANTHROPIC_API_KEY=sk-ant-...` to your `.env` file.")
 
     st.divider()
     st.markdown("### Settings")
@@ -168,7 +161,7 @@ with tab_ai:
 
     if go and query.strip():
         if not os.getenv("ANTHROPIC_API_KEY"):
-            st.error("Add your Anthropic API key in the sidebar to use AI mode.")
+            st.error("No API key found. Add `ANTHROPIC_API_KEY=sk-ant-...` to your `.env` file and restart.")
         elif len(query) > 500:
             st.warning("Query too long — please keep it under 500 characters.")
         else:
