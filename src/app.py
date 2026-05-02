@@ -217,7 +217,10 @@ with tab_ai:
                 with st.expander("Agent reasoning steps"):
                     for step in result["steps"]:
                         st.markdown(f"**Step {step['step']}** — `{step['action']}`")
-                        st.json(step["result"])
+                        if isinstance(step["result"], dict):
+                            st.json(step["result"])
+                        else:
+                            st.write(step["result"])
 
             # ── Song results ──────────────────────────────────────────────
             recs = result["recommendations"]
