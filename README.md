@@ -5,7 +5,7 @@
 
 ## Demo Walkthrough
 
-**[🎬 Watch the Loom walkthrough]((https://www.loom.com/share/aa0fef974d194ad1aae269a52c0ae8c6))**  
+**[🎬 Watch the Loom walkthrough]([(https://www.loom.com/share/aa0fef974d194ad1aae269a52c0ae8c6)])**  
 <!-- Replace with your Loom URL before submitting -->
 
 ---
