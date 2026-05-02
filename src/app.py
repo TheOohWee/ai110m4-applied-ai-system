@@ -121,10 +121,10 @@ with st.sidebar:
     st.caption("Natural language music recommendations\npowered by Claude")
     st.divider()
 
-    if os.getenv("ANTHROPIC_API_KEY"):
+    if os.getenv("GEMINI_API_KEY"):
         st.success("API key loaded ✓")
     else:
-        st.error("No API key found.\nAdd `ANTHROPIC_API_KEY=sk-ant-...` to your `.env` file.")
+        st.error("No API key found.\nAdd `GEMINI_API_KEY=...` to your `.env` file.")
 
     st.divider()
     st.markdown("### Settings")
@@ -160,8 +160,8 @@ with tab_ai:
         go = st.button("Find music", type="primary", use_container_width=True)
 
     if go and query.strip():
-        if not os.getenv("ANTHROPIC_API_KEY"):
-            st.error("No API key found. Add `ANTHROPIC_API_KEY=sk-ant-...` to your `.env` file and restart.")
+        if not os.getenv("GEMINI_API_KEY"):
+            st.error("No API key found. Add `GEMINI_API_KEY=...` to your `.env` file and restart.")
         elif len(query) > 500:
             st.warning("Query too long — please keep it under 500 characters.")
         else:
